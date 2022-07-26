@@ -1,6 +1,7 @@
 import serial
 import time
 import math
+import numpy as np
 
 from constants.delta import *
 
@@ -10,6 +11,18 @@ def ensure_radius(x, y):
         return True
     else:
         return False
+
+
+def cartesian_to_polar(x, y):
+    r = math.sqrt(x * x + y * y)
+    theta = np.arctan2(y, x)
+    return r, theta
+
+
+def polar_to_cartesian(r, theta):
+    x = r * np.cos(theta)
+    y = r * np.sin(theta)
+    return x, y
 
 
 class DeltaController():
@@ -33,7 +46,7 @@ class DeltaController():
 
         while True:
             line = self.serial.readline()
-
+            print(line)
             if line == b'ok\n':
                 break
 
@@ -66,6 +79,12 @@ class DeltaController():
         self.move(self.x, self.y, HOVER)
 
     # TODO: 1. Approx arc with radians
+
+    def move_to_output(self, output_angle):
+        _, theta = cartesian_to_polar(self.x, self.y)
+        for angle in np.linspace(theta, output_angle, ARC_STEPS):
+            x, y = polar_to_cartesian(RADIUS - 10, angle)
+            self.move(x, y, self.z)
 
     # SERVO CONTROLS
 

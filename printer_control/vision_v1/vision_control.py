@@ -23,7 +23,7 @@ class VisionController():
     def __init__(self):
         self.cap = cv2.VideoCapture(VIDEO_LINK, cv2.CAP_DSHOW)
         self.fgbg = cv2.createBackgroundSubtractorMOG2(
-            varThreshold=50, detectShadows=True)
+            varThreshold=70, detectShadows=True)
         self.all_circles = []
         self.rectangles = []
 
@@ -107,12 +107,12 @@ class VisionController():
             for cnt in contours:
                 if cv2.contourArea(cnt) > 200:
 
-                    x, y, width, height = cv2.boundingRect(cnt)
+                    rect = cv2.minAreaRect(cnt)
+                    box = cv2.boxPoints(rect)
+                    box = np.int0(box)
+                    cv2.drawContours(fgmask, [box], 0, 255, 2)
 
-                    cv2.rectangle(fgmask, (x, y), (x + width,
-                                                   y + height), 255, 2)
-
-                    rectangles.append([x, y, width, height])
+                    rectangles.append(box)
 
             cv2.imshow('Detecting Screws', fgmask)
 
