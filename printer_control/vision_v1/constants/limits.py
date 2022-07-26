@@ -1,0 +1,5 @@
+Z_MAX = 300
+Z_MIN = 0
+
+# X^2 + Y^2 <= RADIUS (IRL RADIUS is 26.5cm)
+RADIUS = 85

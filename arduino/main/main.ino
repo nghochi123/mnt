@@ -33,7 +33,16 @@ void setup()
     Serial3.begin(9600);
     Serial3.println("HC-06 started at 9600");
 
-    pinMode(LED_BUILTIN, OUTPUT);
+    // Setting up Pin Modes - All are outputs.
+
+    pinMode(LED_BUILTIN, OUTPUT); // Testing
+
+    for (int i = 0; i < 4; i++)
+    {
+        pinMode(S1PORT + i, OUTPUT);
+        pinMode(S2PORT + i, OUTPUT);
+        pinMode(S3PORT + i, OUTPUT);
+    }
 }
 
 void loop()
