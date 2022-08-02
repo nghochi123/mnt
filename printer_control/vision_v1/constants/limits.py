@@ -7,4 +7,4 @@ RADIUS = 85
 
 # SERVO LIMITS
 S_MAX = 180
-S_MIN = 15
+S_MIN = 0

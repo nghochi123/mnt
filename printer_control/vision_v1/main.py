@@ -1,7 +1,6 @@
 import time
 import numpy as np
 from constants.delta import *
-from constants.limits import S_MAX, S_MIN
 from delta_movement import DeltaController
 from vision_control import VisionController
 
@@ -37,14 +36,6 @@ def calculate_angle(box):
 
     return np.pi - np.arctan(dx / dy)
 
-# trash servo degrees ???
-
-
-def radians_to_trash(angle, trash_min, trash_max):
-    trash_range = trash_max - trash_min
-    fr = angle / np.pi
-    return 180 - ((fr * trash_range) + trash_min)
-
 
 def main():
     delta.home()
@@ -58,8 +49,8 @@ def main():
         x, y = rect_coords_irl(vision.circle, RADIUS, [old_x, old_y])
         angle = calculate_angle(rectangle)
 
+        delta.spin_to_angle(angle)
         delta.move_to_rect((x, y))
-        delta.rotate_servo(SERVO0, radians_to_trash(angle, S_MIN, S_MAX))
         delta.move_to_output(np.pi)
     delta.end_connection()
 

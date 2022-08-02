@@ -4,6 +4,7 @@ import math
 import numpy as np
 
 from constants.delta import *
+from constants.limits import S_MAX, S_MIN
 
 
 def ensure_radius(x, y):
@@ -32,29 +33,32 @@ class DeltaController():
         self.z = 345
         self.step = STEP
         self.servos = {
-            SERVO0: 0,
-            SERVO1: 0
+            S_SPINNER: 0,
+            S_GRIPPER: G_CLOSE
         }
         self.serial = serial.Serial(
             port=PORT, baudrate=BAUDRATE, timeout=TIMEOUT)
 
         time.sleep(2)
 
+    # Send a serial command
     def command(self, command):
         self.serial.write(str.encode(command))
         time.sleep(0.1)
 
         while True:
             line = self.serial.readline()
-            print(line)
             if line == b'ok\n':
                 break
 
+    # Home
     def home(self):
         self.x = 0
         self.y = 0
         self.z = Z_HOME
         self.command('G28\r\n')
+        self.spin_to_angle(0)
+        self.open_grip()
 
     # MOTION CONTROLS
 
@@ -72,18 +76,20 @@ class DeltaController():
             f'G0 X{self.x:.6f} Y{self.y:.6f} Z{self.z:.6f} F{STEP}\r\n')
 
     def move_to_rect(self, coords):
+        self.open_grip()
         self.move(*coords, 20)
+        self.close_grip()
         self.hover_upwards()
 
     def hover_upwards(self):
         self.move(self.x, self.y, HOVER)
 
-    # TODO: 1. Approx arc with radians
+    # Arc movement to output location
 
     def move_to_output(self, output_angle):
         _, theta = cartesian_to_polar(self.x, self.y)
         for angle in np.linspace(theta, output_angle, ARC_STEPS):
-            x, y = polar_to_cartesian(RADIUS - 10, angle)
+            x, y = polar_to_cartesian(RADIUS - 20, angle)
             self.move(x, y, self.z)
 
     # SERVO CONTROLS
@@ -92,6 +98,23 @@ class DeltaController():
         assert angle < 200
         self.servos[servo] = angle
         self.command(f'M280 {servo} S{angle}\r\n')
+
+    # Spinner
+
+    def spin_to_angle(self, angle):  # ANGLE IS IN RADIANS
+        s_range = S_MAX - S_MIN
+        fr = angle / np.pi
+        self.rotate_servo(S_SPINNER, 180 - ((fr * s_range) + S_MIN))
+
+    # Gripper
+
+    def open_grip(self):
+        self.rotate_servo(S_GRIPPER, G_OPEN)
+
+    def close_grip(self):
+        self.rotate_servo(S_GRIPPER, G_CLOSE)
+
+    # END CONNECTION
 
     def end_connection(self):
         time.sleep(2)
