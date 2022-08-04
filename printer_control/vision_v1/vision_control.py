@@ -7,6 +7,8 @@ from constants.vars import VIDEO_LINK, HOUGH_MAX, HOUGH_MIN, HOUGH_PARAM_1, HOUG
 def resize(img):
     return cv2.resize(img, (1024, 576))
 
+def reduce_size(img):
+    return cv2.resize(img, (512, 288))
 
 def reduce_to_circle(image, circle):
     x_center, y_center, radius = circle
@@ -21,7 +23,7 @@ def reduce_to_circle(image, circle):
 
 class VisionController():
     def __init__(self):
-        self.cap = cv2.VideoCapture(VIDEO_LINK, cv2.CAP_DSHOW)
+        self.cap = cv2.VideoCapture(VIDEO_LINK, cv2.CAP_V4L)
         self.fgbg = cv2.createBackgroundSubtractorMOG2(
             varThreshold=70, detectShadows=True)
         self.all_circles = []
@@ -114,7 +116,7 @@ class VisionController():
 
                     rectangles.append(box)
 
-            cv2.imshow('Detecting Screws', fgmask)
+            cv2.imshow('Detecting Screws', reduce_size(fgmask))
 
             # if len(rectangles) > 0 and count > 20 and len(rectangles) == rects:
             #     break

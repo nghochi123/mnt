@@ -57,8 +57,8 @@ class DeltaController():
         self.y = 0
         self.z = Z_HOME
         self.command('G28\r\n')
-        self.spin_to_angle(0)
-        self.open_grip()
+        self.spin_to_angle(np.pi / 2)
+        self.close_grip()
 
     # MOTION CONTROLS
 
@@ -77,7 +77,8 @@ class DeltaController():
 
     def move_to_rect(self, coords):
         self.open_grip()
-        self.move(*coords, 20)
+        print(coords)
+        self.move(coords[0], coords[1] - 20, 80)
         self.close_grip()
         self.hover_upwards()
 
