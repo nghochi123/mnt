@@ -1,3 +1,5 @@
+# This is only used for testing purposes, to see whether the normal operation of the camera is working.
+
 from scipy.spatial import distance as dist
 from imutils import perspective
 from imutils import contours

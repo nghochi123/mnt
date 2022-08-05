@@ -1,3 +1,4 @@
+# Script to take photos for calibration purposes.
 import cv2
 
 cam = cv2.VideoCapture(1, cv2.CAP_DSHOW)
@@ -19,11 +20,11 @@ while True:
 
     k = cv2.waitKey(1)
     if k % 256 == 27:
-        # ESC pressed
+        # ESC pressed (close program)
         print("Escape hit, closing...")
         break
     elif k % 256 == 32:
-        # SPACE pressed
+        # SPACE pressed (take photos)
         img_name = "./images/image_{}.png".format(img_counter)
         cv2.imwrite(img_name, frame)
         print("{} written!".format(img_name))
