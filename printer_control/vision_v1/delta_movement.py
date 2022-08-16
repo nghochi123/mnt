@@ -6,6 +6,8 @@ import numpy as np
 from constants.delta import *
 from constants.limits import S_MAX, S_MIN
 
+# Make sure radius does not exceed maximum radius
+
 
 def ensure_radius(x, y):
     if math.sqrt(x * x + y * y) <= RADIUS:
@@ -13,11 +15,15 @@ def ensure_radius(x, y):
     else:
         return False
 
+# Convert cartesian coordinates to polar coordinates
+
 
 def cartesian_to_polar(x, y):
     r = math.sqrt(x * x + y * y)
     theta = np.arctan2(y, x)
     return r, theta
+
+# Convert polar coordinates to cartesian coordinates
 
 
 def polar_to_cartesian(r, theta):
@@ -27,6 +33,8 @@ def polar_to_cartesian(r, theta):
 
 
 class DeltaController():
+    # Set up the initial variables for the delta controller class. When you create an object with the class, it will come with these predetermined variables.
+    # You can find most of the variables in the constants folder, and set it there.
     def __init__(self):
         self.x = 0
         self.y = 0
@@ -41,7 +49,7 @@ class DeltaController():
 
         time.sleep(2)
 
-    # Send a serial command
+    # Send a serial command (Gcode) You can learn more about Gcode here: https://reprap.org/wiki/G-code
     def command(self, command):
         self.serial.write(str.encode(command))
         time.sleep(0.1)
@@ -51,7 +59,7 @@ class DeltaController():
             if line == b'ok\n':
                 break
 
-    # Home
+    # Home the machine
     def home(self):
         self.x = 0
         self.y = 0
