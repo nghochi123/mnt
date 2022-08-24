@@ -53,6 +53,7 @@ def calculate_angle(box):
 def main():
     # First home the machine (Using the delta printer class that was initiated)
     delta.home()
+    delta.home_turntable()
     # Move the camera + claw somewhere that doesn't block the camera
     delta.allow_vision()
     time.sleep(2)

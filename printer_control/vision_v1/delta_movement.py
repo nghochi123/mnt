@@ -123,6 +123,18 @@ class DeltaController():
     def close_grip(self):
         self.rotate_servo(S_GRIPPER, G_CLOSE)
 
+    # Turntable
+    def allow_turntable_movement(self):
+        self.command(f'M302 S0\r\n')
+
+    def move_turntable(self, angle):
+        assert angle < 360 and angle >= 0
+        # ADD CALCULATE ANGLE FUNCTION
+        self.command(f'G0 E{angle}\r\n')
+
+    def home_turntable(self):
+        self.move_turntable(0)
+
     # END CONNECTION
 
     def end_connection(self):
