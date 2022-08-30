@@ -91,10 +91,11 @@ class DeltaController():
     # Arc movement to output location
 
     def move_to_output(self, output_angle):
-        _, theta = cartesian_to_polar(self.x, self.y)
-        for angle in np.linspace(theta, output_angle, ARC_STEPS):
-            x, y = polar_to_cartesian(RADIUS - 20, angle)
-            self.move(x, y, self.z)
+        # _, theta = cartesian_to_polar(self.x, self.y)
+        x, y = polar_to_cartesian(RADIUS - 20, output_angle)
+        self.move(x, y, self.z)
+        # for angle in np.linspace(theta, output_angle, ARC_STEPS):
+            # x, y = polar_to_cartesian(RADIUS - 20, angle)
 
     # SERVO CONTROLS
 
