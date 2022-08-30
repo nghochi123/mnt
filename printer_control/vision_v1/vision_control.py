@@ -1,14 +1,17 @@
 import numpy as np
 import cv2
+from datetime import datetime, timedelta
 
 from constants.vars import VIDEO_LINK, HOUGH_MAX, HOUGH_MIN, HOUGH_PARAM_1, HOUGH_PARAM_2
 
-# Resize image for visibility purposes
+# reduce_size image for visibility purposes
+
 
 def reduce_size(img):
     return cv2.resize(img, (512, 288))
 
 # Change the image from a rectangle to a circle, to reduce the focus to just a smaller range
+
 
 def reduce_to_circle(image, circle):
     x_center, y_center, radius = circle
@@ -26,6 +29,7 @@ def reduce_to_circle(image, circle):
 class VisionController():
     # Initialise the video capturing device, as well as the background subtraction model for use later on
     def __init__(self):
+        self.start_time = datetime.now()
         self.cap = cv2.VideoCapture(VIDEO_LINK, cv2.CAP_V4L)
         self.fgbg = cv2.createBackgroundSubtractorMOG2(
             varThreshold=70, detectShadows=True)
@@ -37,7 +41,8 @@ class VisionController():
     # Detect where the circle is.
 
     def circle_callibration(self):
-        while True:
+        self.start_time = datetime.now()
+        while datetime.now() < self.start_time + timedelta(seconds=10):
             _, frame = self.cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -65,37 +70,38 @@ class VisionController():
                 for i in circles[0, :]:
                     cv2.circle(frame, (i[0], i[1]), i[2], (0, 255, 0), 2)
                     self.all_circles.append(i)
-            cv2.imshow('Callibration', resize(frame))
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            cv2.imshow('Callibration', reduce_size(frame))
         self.circle = np.mean(self.all_circles, axis=0).astype(int)
         cv2.destroyAllWindows()
 
     # Callibrate background using background subtraction
     def background_callibration(self):
-        while(True):
+        self.start_time = datetime.now()
+        while(datetime.now() < self.start_time + timedelta(seconds=10)):
             _, frame = self.cap.read()
             fgmask = self.fgbg.apply(frame)
-            cv2.imshow('Background Callibration', resize(fgmask))
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+        #     cv2.imshow('Background Callibration', reduce_size(fgmask))
+        #     if cv2.waitKey(1) & 0xFF == ord('q'):
+        #         break
 
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
     # This is a pause for placement of screws, if there is a lot of white, means that calibration did not go well = restart
     def screw_placement(self):
-        while(True):
+        self.start_time = datetime.now()
+        while datetime.now() < self.start_time + timedelta(seconds=10):
             _, frame = self.cap.read()
             fgmask = self.fgbg.apply(frame, learningRate=0)
-            cv2.imshow('Screw Placement', resize(fgmask))
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+        #     cv2.imshow('Screw Placement', reduce_size(fgmask))
+        #     if cv2.waitKey(1) & 0xFF == ord('q'):
+        #         break
 
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
     # Detect Screws
     def detect_screws(self):
-        while(True):
+        self.start_time = datetime.now()
+        while datetime.now() < self.start_time + timedelta(seconds=10):
             ret, frame = self.cap.read()
 
             # Using the predefined background subtraction model, we create a mask, then reduce it to a circle.
@@ -125,21 +131,21 @@ class VisionController():
 
                     rectangles.append(box)
 
-            cv2.imshow('Detecting Screws', reduce_size(fgmask))
+            # cv2.imshow('Detecting Screws', reduce_size(fgmask))
 
-            # if len(rectangles) > 0 and count > 20 and len(rectangles) == rects:
+            # # if len(rectangles) > 0 and count > 20 and len(rectangles) == rects:
+            # #     break
+            # # elif len(rectangles) > 0:
+            # #     count += 1
+            # #     rects = len(rectangles)
+            # # else:
+            # #     count = 0
+
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
-            # elif len(rectangles) > 0:
-            #     count += 1
-            #     rects = len(rectangles)
-            # else:
-            #     count = 0
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
 
         self.rectangles = rectangles
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
     # Convenience function
     def callibrate(self):
