@@ -72,7 +72,7 @@ class VisionController():
                     self.all_circles.append(i)
             # cv2.imshow('Callibration', reduce_size(frame))
         self.circle = np.mean(self.all_circles, axis=0).astype(int)
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
     # Callibrate background using background subtraction
     def background_callibration(self):
@@ -88,7 +88,7 @@ class VisionController():
 
     # This is a pause for placement of screws, if there is a lot of white, means that calibration did not go well = restart
     def screw_placement(self):
-#        self.start_time = datetime.now()
+        #        self.start_time = datetime.now()
         print("Please place your screws and press enter after.")
         h = input()
   #      while datetime.now() < self.start_time + timedelta(seconds=20):
