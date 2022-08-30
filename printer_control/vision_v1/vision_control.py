@@ -88,17 +88,18 @@ class VisionController():
 
     # This is a pause for placement of screws, if there is a lot of white, means that calibration did not go well = restart
     def screw_placement(self):
-        self.start_time = datetime.now()
-        print("Please place your screws - you have 20 seconds.")
-        while datetime.now() < self.start_time + timedelta(seconds=20):
-            _, frame = self.cap.read()
-            fgmask = self.fgbg.apply(frame, learningRate=0)
+#        self.start_time = datetime.now()
+        print("Please place your screws and press enter after.")
+        h = input()
+  #      while datetime.now() < self.start_time + timedelta(seconds=20):
+   #         _, frame = self.cap.read()
+    #        fgmask = self.fgbg.apply(frame, learningRate=0)
         #     cv2.imshow('Screw Placement', reduce_size(fgmask))
         #     if cv2.waitKey(1) & 0xFF == ord('q'):
         #         break
 
         # cv2.destroyAllWindows()
-        print("Please remove your hands from the bed.")
+#        print("Please remove your hands from the bed.")
 
     # Detect Screws
     def detect_screws(self):

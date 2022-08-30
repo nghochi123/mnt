@@ -52,12 +52,13 @@ class DeltaController():
     # Send a serial command (Gcode) You can learn more about Gcode here: https://reprap.org/wiki/G-code
     def command(self, command):
         self.serial.write(str.encode(command))
-        time.sleep(0.1)
 
         while True:
             line = self.serial.readline()
+#            print(line)
             if line == b'ok\n':
                 break
+        time.sleep(1)
 
     # Home the machine
     def home(self):
