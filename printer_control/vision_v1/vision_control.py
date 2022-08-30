@@ -42,7 +42,7 @@ class VisionController():
 
     def circle_callibration(self):
         self.start_time = datetime.now()
-        while datetime.now() < self.start_time + timedelta(seconds=10):
+        while datetime.now() < self.start_time + timedelta(seconds=5):
             _, frame = self.cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -70,14 +70,14 @@ class VisionController():
                 for i in circles[0, :]:
                     cv2.circle(frame, (i[0], i[1]), i[2], (0, 255, 0), 2)
                     self.all_circles.append(i)
-            cv2.imshow('Callibration', reduce_size(frame))
+            # cv2.imshow('Callibration', reduce_size(frame))
         self.circle = np.mean(self.all_circles, axis=0).astype(int)
         cv2.destroyAllWindows()
 
     # Callibrate background using background subtraction
     def background_callibration(self):
         self.start_time = datetime.now()
-        while(datetime.now() < self.start_time + timedelta(seconds=10)):
+        while(datetime.now() < self.start_time + timedelta(seconds=5)):
             _, frame = self.cap.read()
             fgmask = self.fgbg.apply(frame)
         #     cv2.imshow('Background Callibration', reduce_size(fgmask))
@@ -89,7 +89,8 @@ class VisionController():
     # This is a pause for placement of screws, if there is a lot of white, means that calibration did not go well = restart
     def screw_placement(self):
         self.start_time = datetime.now()
-        while datetime.now() < self.start_time + timedelta(seconds=10):
+        print("Please place your screws - you have 20 seconds.")
+        while datetime.now() < self.start_time + timedelta(seconds=20):
             _, frame = self.cap.read()
             fgmask = self.fgbg.apply(frame, learningRate=0)
         #     cv2.imshow('Screw Placement', reduce_size(fgmask))
@@ -97,6 +98,7 @@ class VisionController():
         #         break
 
         # cv2.destroyAllWindows()
+        print("Please remove your hands from the bed.")
 
     # Detect Screws
     def detect_screws(self):
